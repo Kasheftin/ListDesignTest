@@ -1,0 +1,33 @@
+{
+  "name": "ListDesignTest",
+  "author": "Alexey Kuznetsov <kasheftin@gmail.com> (http://rag.lt)",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kasheftin/ListDesignTest"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "babel-preset-babili": "0.0.4",
+    "babel-preset-es2015": "^6.16.0",
+    "babel-preset-react": "^6.16.0",
+    "bootstrap-sass": "^3.3.7",
+    "classnames": "^2.2.5",
+    "extend": "^3.0.0",
+    "mobx": "^2.5.2",
+    "mobx-react": "^3.5.7",
+    "mobx-react-devtools": "^4.2.6",
+    "react": "^15.3.2",
+    "react-dom": "^15.3.2"
+  },
+  "scripts": {
+    "build-js": "browserify js/main.jsx -t [ babelify --presets [ es2015 react ] ] -o build/main.js",
+    "build-css": "sass css/main.scss build/main.css --sourcemap=none",
+    "watch-js": "watch 'npm run build-js' js",
+    "watch-css": "watch 'npm run build-css' css",
+    "release-js": "NODE_ENV=production browserify js/main.jsx -t [ babelify --presets [ es2015 react babili ] ] | uglifyjs --screw-ie8 --compress --mangle --output build/main.min.js",
+    "release-css": "sass css/main.scss build/main.min.css --style=compressed --sourcemap=none",
+    "build": "npm run build-js & npm run build-css",
+    "watch": "npm run watch-js & npm run watch-css",
+    "release": "npm run release-js & npm run release-css"
+  }
+}
