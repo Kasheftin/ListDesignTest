@@ -123,7 +123,6 @@ class Item {
 					this.stat[f].failCnt = Math.round(Math.random()*10000);
 					this.stat[f].covered = Math.round(Math.random()*100);
 					this.stat[f].isOk = this.stat[f].successCnt+this.stat[f].failCnt>0?(Math.random()<this.stat[f].successCnt/(this.stat[f].successCnt+this.stat[f].failCnt)):0;
-					console.log("cov",this.stat[f].covered);
 				});
 			});
 		},this.anim);

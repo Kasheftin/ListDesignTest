@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { observable } from "mobx";
 import { observer } from "mobx-react";
 import _ from "underscore";
-import Item from "./item.jsx";
+import Item from "./item.js";
 
 @observer class DataProvider extends Component {
 	addRandomEntry() {

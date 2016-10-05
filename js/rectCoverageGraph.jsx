@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { observable, reaction } from "mobx";
 import { observer } from "mobx-react";
 import classNames from "classnames";
+import raf from "raf";
 
 @observer class RectCoverageGraph extends Component {
 	@observable perc = 0;
@@ -16,7 +17,7 @@ import classNames from "classnames";
 		);
 	}
 	animateTo(perc) {
-		this._animTimeout && cancelAnimationFrame(this._animTimeout);
+		this._animTimeout && raf.cancel(this._animTimeout);
 		const animStart = (new Date).getTime();
 		const startPerc = this.perc;
 		const duration = 500;
@@ -25,7 +26,7 @@ import classNames from "classnames";
 			d = Math.max(0,Math.min(1,d));
 			d = d<0.5?2*d*d:-1+(4-2*d)*d;
 			this.perc = Math.round(startPerc+(perc-startPerc)*d);
-			if (d<1) this._animTimeout = requestAnimationFrame(run);
+			if (d<1) this._animTimeout = raf(run);
 		}
 		run();
 	}

@@ -21,6 +21,7 @@
     "mobx-react": "^3.5.7",
     "mobx-react-devtools": "^4.2.6",
     "moment": "^2.15.1",
+    "raf": "^3.3.0",
     "react": "^15.3.2",
     "react-dom": "^15.3.2",
     "sass-flex-mixin": "^1.0.3",
@@ -35,6 +36,14 @@
     "release-css": "sass css/main.scss build/main.min.css --style=compressed --sourcemap=none",
     "build": "npm run build-js & npm run build-css",
     "watch": "npm run watch-js & npm run watch-css",
-    "release": "npm run release-js & npm run release-css"
+    "release": "npm run release-js & npm run release-css",
+    "test": "jest"
+  },
+  "devDependencies": {
+    "babel-jest": "^16.0.0",
+    "enzyme": "^2.4.1",
+    "jasmine-object-matchers-jest": "^0.1.0",
+    "jest": "^16.0.1",
+    "react-addons-test-utils": "^15.3.2"
   }
 }

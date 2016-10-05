@@ -243,9 +243,9 @@ html,body,.wrapper {
 }
 
 .ldt-item {
-	height: 200px;
 	overflow: hidden;
 	@include flexbox();
+	@include flex-wrap(wrap);
 	&.-creating {
 		@include animation(ldt-create-item 0.5s normal forwards ease-in-out);
 	}
@@ -309,6 +309,7 @@ html,body,.wrapper {
 			@include box-shadow(none);
 			background-color: transparent;
 			border-color: transparent;
+			width: 190px;
 		}
 		&-result {
 			text-align: center;

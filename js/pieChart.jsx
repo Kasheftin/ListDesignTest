@@ -3,6 +3,7 @@ import { observable, reaction, computed, transaction } from "mobx";
 import { observer } from "mobx-react";
 import classNames from "classnames";
 import Chart from "chart.js";
+import raf from "raf";
 
 @observer class PieChart extends Component {
 	@observable successCnt = 0;
@@ -16,14 +17,13 @@ import Chart from "chart.js";
 		this.percReaction = reaction(
 			() => [this.props.f.successCnt,this.props.f.failCnt],
 			stat => {
-				console.log("stat",stat);
 				this.animateTo(stat[0],stat[1]);
 			},
 			true
 		);
 	}
 	animateTo(successCnt,failCnt) {
-		this._animTimeout && cancelAnimationFrame(this._animTimeout);
+		this._animTimeout && raf.cancel(this._animTimeout);
 		const perc = this.calcPerc(successCnt,failCnt);
 		const animStart = (new Date).getTime();
 		const startSuccessCnt = this.successCnt;
@@ -40,7 +40,7 @@ import Chart from "chart.js";
 				this.perc = Math.round(startPerc+(perc-startPerc)*d);
 				this.updatePie();
 			});
-			if (d<1) this._animTimeout = requestAnimationFrame(run);
+			if (d<1) this._animTimeout = raf(run);
 		}
 		run();
 	}
@@ -51,7 +51,6 @@ import Chart from "chart.js";
 		this.pieChart.update();
 	}
 	componentDidMount() {
-		console.log("pieDomNode",this.pieDomNode);
 		this.pieChart = new Chart(this.pieDomNode,{
 			type: "pie",
 			data: {
