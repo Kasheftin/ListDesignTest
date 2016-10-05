@@ -1,5 +1,443 @@
-@import "bootstrap/bootstrap";
+@import "../node_modules/bootstrap-sass/assets/stylesheets/bootstrap";
+@import "../node_modules/sass-flex-mixin/flex";
 
-body {
-	background-color: #dedede;
+
+@keyframes ldt-create-row {
+	from {
+		opacity: 0;
+		max-height: 0;
+		transform: scale(1,1);
+	}
+	50% {
+		opacity: 1;
+		max-height: 500px;
+		transform: scale(1.01,1.01);
+	}
+	to {
+		transform: scale(1, 1);
+		max-height: none;
+	}
+}
+
+@keyframes ldt-update-row {
+	from {
+		transform: scale(1,1);
+	}
+	50% {
+		transform: scale(1.01,1.01);
+	}
+	to {
+		transform: scale(1,1);
+	}
+}
+
+@keyframes ldt-remove-row {
+	from {
+		opacity: 1;
+		max-height: 500px;
+		transform: scale(1,1);
+		margin: 10px 0;
+		padding: 4px;
+	}
+	50% {
+		opacity: 1;
+		transform: scale(1.01, 1.01);
+		margin: 10px 0;
+		padding: 4px;
+	}
+	to {
+		opacity: 0;
+		max-height: 0;
+		transform: scale(1,1);
+		margin: -2px 0;
+		padding: 0;
+	}
+}
+
+@keyframes ldt-create-item {
+	from {
+		opacity: 0;
+		max-height: 0;
+	}
+	to {
+		opacity: 1;
+		max-height: 200px;
+	}
+}
+
+@keyframes ldt-remove-item {
+	from {
+		opacity: 1;
+		max-height: 200px;
+	}
+	to {
+		opacity: 0;
+		max-height: 0;
+	}
+}
+
+
+
+
+html,body,.wrapper {
+	height: 100%;
+}
+
+.container {
+	@include flexbox();
+	@include flex-direction(column);
+	height: 100%;
+}
+
+.ldt-controls,.ldt-list {
+	border: 1px solid #ddd;
+	border-radius: 4px;
+	margin: 20px 0;
+	padding: 15px;
+}
+
+.ldt-list {
+	@include flex-grow(1);
+}
+
+.ldt-entry {
+	@include transition(border-color 0.5s ease,color 0.5s ease);
+	border: 2px solid #cacaca;
+	padding: 4px;
+	margin: 10px 0;
+	&.-header {
+		border-color: transparent;
+	}
+	&.-clickable {
+		cursor: pointer;
+	}
+	&.-accepted,&.-succeed {
+		border-color: #568e31;
+		color: #3e5526;
+		@include gradient-horizontal(rgba(#ebf1e9,1),rgba(0,0,0,0),0,30%);
+	}
+	&.-accepted.-clickable:hover,&.-succeed.-clickable:hover,&.-selected {
+		border-width: 3px;
+		padding: 3px;
+	}
+	&.-rejected,&.-fail {
+		border-color: #ba0004;
+		color: #c1121e;
+		@include gradient-horizontal(rgba(#fbe1e1,1),rgba(0,0,0,0),0,30%);
+	}
+	&.-rejected.-clickable:hover,&.-fail.-clickable:hover,&.-selected {
+		border-width: 3px;
+		padding: 3px;
+	}
+	&.-creating {
+		@include animation(ldt-create-row 0.5s normal forwards);
+	}
+	&.-updating.-accepted,&.-updating.-succeed {
+		border-color: lighten(#568e31,20%);
+	}
+	&.-updating.-rejected,&.-updating.-fail {
+		border-color: lighten(#ba0004,20%);
+	}
+/*
+	&.-updating {
+		@include animation(ldt-update-row 0.5s normal infinite);
+	}
+*/
+	&.-removing {
+		@include animation(ldt-remove-row 0.5s normal forwards);
+	}
+}
+
+.ldt-row {
+	@include flexbox();
+	@include align-items(center);
+	&__cell {
+		text-align: center;
+		&.-name,&.-owner,&.-time,&.-state {
+			@include flex-grow(1);
+			@include flex-basis(10%);
+			text-transform: capitalize;
+		}
+		&.-percent {
+			@include flex-basis(100px);
+		}
+		&.-name {
+			padding-left: 35px;
+			position: relative;
+			text-align: left;
+		}
+		&-icon {
+			width: 30px;
+			height: 26px;
+			display: block;
+			position: absolute;
+			left: 0;
+			top: -5px;
+			background: transparent url("./badIcons.png") 0 0 no-repeat;
+			&.-build.-accepted,&.-build.-succeed {
+				background-position: 0 0;
+			}
+			&.-build.-rejected,&.-build.-fail {
+				background-position: -30px 0;
+			}
+			&.-firewall.-accepted,&.-firewall.-succeed {
+				background-position: -60px 0;
+			}
+			&.-firewall.-rejected,&.-firewall.-fail {
+				background-position: -90px 0;
+			}
+		}
+	}
+}
+
+.ldt-rgraph {
+	width: 45px;
+	height: 30px;
+	border: 2px solid #c0c0c0;
+	background-color: #d8d8d8;
+	position: relative;
+	margin: 0 auto;
+	&-inner {
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		left: 0;
+		@include transition(background-color 0.5s ease,width 0.5s ease);
+		&.-success {
+			background-color: #548039;
+		}
+		&.-fail {
+			background-color: #be0712;
+		}
+	}
+	&.-adaptive {
+		width: 100%;
+	}
+	&.-noborder {
+		border: 0;
+	}
+	&.-coverage {
+		position: absolute;
+		bottom: 4px;
+		left: 12px;
+		right: 12px;
+		width: auto;
+		border: 0;
+		background-color: #f6cbae;
+	}
+	&.-coverage &-inner {
+		background-color: #c6dfb5;
+		@include transition(none);
+	}
+	&__description {
+		text-align: center;
+		font-size: 11px;
+		line-height: 11px;
+		color: $text-color;
+		position: relative;
+		margin: 4px 0;
+		&-perc {
+			font-weight: bold;
+		}
+	}
+}
+
+.ldt-item {
+	height: 200px;
+	overflow: hidden;
+	@include flexbox();
+	&.-creating {
+		@include animation(ldt-create-item 0.5s normal forwards ease-in-out);
+	}
+	&.-removing {
+		@include animation(ldt-remove-item 0.5s normal forwards ease-in-out);
+	}
+	&__sq {
+		width: 200px;
+		height: 180px;
+		padding: 4px;
+		margin: 10px;
+		position: relative;
+		@include box-shadow(5px 5px 5px rgba(0,0,0,0.3));
+		&.-success {
+			border: 3px solid #568e31;
+			color: #3e5526;
+			@include gradient-horizontal(rgba(#ebf1e9,1),rgba(#ffffff,1),0,70%);
+		}
+		&.-fail {
+			border: 3px solid #ba0004;
+			color: #c1121e;
+			@include gradient-horizontal(rgba(#fbe1e1,1),rgba(#ffffff,1),0,70%);
+		}
+		&:active,&:hover,&:focus,&:visited {
+			text-decoration: none;
+		}
+		&-title {
+			font-weight: bold;
+		}
+		&-build {
+			margin-top: 20px;
+			@include flexbox();
+			@include justify-content(space-around);
+			&-entry {
+				@include flex-basis(66px);
+				height: 80px;
+				text-align: center;
+				background: transparent url("./badIcons.png") 0 -26px no-repeat;
+				color: #1d4875;
+				padding-top: 65px;
+			}
+			&-bottom {
+				position: absolute;
+				bottom: 4px;
+				left: 12px;
+				right: 12px;
+				text-align: center;
+				color: $text-color;
+			}
+		}
+		&-metrics {
+			@include flexbox();
+			@include flex-wrap(wrap);
+			&-entry {
+				@include flex-basis(50%);
+				text-align: center;
+				margin-bottom: 5px;
+			}
+		}
+		&.-text {
+			@include box-shadow(none);
+			background-color: transparent;
+			border-color: transparent;
+		}
+		&-result {
+			text-align: center;
+			color: $text-color;
+			&-note {
+				margin-top: 25px;
+			}
+			&-row1 {
+				margin-top: 10px;
+				color: #fcbc24;
+			}
+			&-row2 {
+				margin-bottom: 20px;
+				font-size: 20px;
+				line-height: 20px;
+				color: #fcbc24;
+			}
+			&-sub-button {
+				border-radius: 0;
+				background-color: #5e9cd3;
+				border: 1px solid #ccc;
+			}
+		}
+	}
+}
+
+.ldt-piechart {
+	@include flexbox();
+	@include align-items(center);
+	&__pie {
+		@include flex-basis(100px);
+	}
+	&__description {
+		text-align: center;
+		@include flex-grow(1);
+		&-perc {
+			font-size: 30px;
+			line-height: 30px;
+		}
+		&-sub {
+			color: $text-color;
+			font-size: 11px;
+			line-height: 11px;
+		}
+	}
+}
+
+.ldt-arrow {
+	position: relative;
+	&-symbol {
+		position: absolute;
+		width: 26px;
+		height: 26px;
+		top: 30px;
+		left: 50%;
+		margin-left: -13px;
+		background-color: #548039;
+		&:after {
+			position: absolute;
+			pointer-events: none;
+			width: 0;
+			height: 0;
+			border: 30px solid transparent;
+			content: " ";
+		}
+		&.-up:after {
+			bottom: 100%;
+			left: 50%;
+			margin-left: -30px;
+			border-bottom-color: #548039;
+		}
+		&.-down:after {
+			top: 100%;
+			left: 50%;
+			margin-left: -30px;
+			border-bottom-color: #548039;
+		}
+		&.-left:after {
+			right: 100%;
+			top: 50%;
+			margin-top: -30px;
+			border-right-color: #548039;
+		}
+		&.-right:after {
+			left: 100%;
+			top: 50%;
+			margin-top: -30px;
+			border-left-color: #548039;
+		}
+		&.-left,&.-right {
+			top: 18px;
+		}
+		&.-yellow {
+			background-color: #fed86e;
+		}
+		&.-yellow.-up:after {
+			border-bottom-color:#fed86e;
+		}
+		&.-yellow.-down:after {
+			border-top-color:#fed86e;
+		}
+		&.-yellow.-left:after {
+			border-right-color:#fed86e;
+		}
+		&.-yellow.-right:after {
+			border-left-color:#fed86e;
+		}
+	}
+	&-perc {
+		color: #ffffff;
+		position: absolute;
+		top: 25px;
+		left: 0;
+		right: 0;
+		text-align: center;
+		font-size: 11px;
+		line-height: 11px;
+	}
+	&-description {
+		padding-top: 56px;
+		color: $text-color;
+		position: relative;
+		font-size: 11px;
+		line-height: 11px;
+	}
+	&.-left &-description,&.-right &-description {
+		padding-top: 60px;
+	}
+	&.-yellow &-perc {
+		color: $text-color;
+	}
 }
