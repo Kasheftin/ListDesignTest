@@ -1,4 +1,4 @@
-import Item from "../js/item.js";
+import Item from "../js/models/item.js";
 
 jest.useFakeTimers();
 

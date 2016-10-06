@@ -32,7 +32,7 @@
     "build-css": "sass css/main.scss build/main.css --sourcemap=none",
     "watch-js": "watch 'npm run build-js' js",
     "watch-css": "watch 'npm run build-css' css",
-    "release-js": "NODE_ENV=production browserify js/main.jsx -t [ babelify --presets [ es2015 react babili ] ] | uglifyjs --screw-ie8 --compress --mangle --output build/main.min.js",
+    "release-js": "NODE_ENV=production browserify js/main.jsx -t [ babelify --presets [ es2015 react babili ] --plugins [ transform-decorators-legacy transform-class-properties ] ] | uglifyjs --screw-ie8 --compress --mangle --output build/main.min.js",
     "release-css": "sass css/main.scss build/main.min.css --style=compressed --sourcemap=none",
     "build": "npm run build-js & npm run build-css",
     "watch": "npm run watch-js & npm run watch-css",

@@ -1,13 +1,11 @@
 import React, { Component } from "react";
 import { observable } from "mobx";
 import { observer } from "mobx-react";
-import Row from "./row.jsx";
+import Row from "./presentational/row.jsx";
 
 @observer class List extends Component {
-	selectItem(newItem) {
-		this.props.items.forEach(item => {
-			(newItem.id==item.id) ? item.select() : item.deselect();
-		});
+	selectItem(item) {
+		this.props.store.selectItemById(item.id);
 	}
 	render() {
 		return (
@@ -25,7 +23,7 @@ import Row from "./row.jsx";
 					</div>
 				</div>
 				<div className="ldt-list__rows">
-					{this.props.items.map(item=>(
+					{this.props.store.items.map(item=>(
 						<Row key={item.id} item={item} click={e=>this.selectItem(item)} />
 					))}
 				</div>
